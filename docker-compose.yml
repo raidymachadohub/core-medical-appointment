@@ -1,13 +1,43 @@
+#version: '2'
+#
+#services:
+#  spring:
+#      build:
+#        context: .
+#        dockerfile: docker/spring.dockerfile
+#      ports:
+#        - 8080:8080
+#      restart: always
+
+
+
 version: '2'
 
 services:
   spring:
-      build:
-        context: .
-        dockerfile: docker/spring.dockerfile
-      ports:
-        - 8080:8080
-      restart: always
+    build:
+      context: .
+      dockerfile: docker/spring.dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    networks:
+      - eldorado
+    restart: on-failure
 
+  postgres:
+    image: postgres:9.4
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=eldorado
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    networks:
+      - eldorado
 
-
+networks:
+  eldorado:
+    driver: bridge
