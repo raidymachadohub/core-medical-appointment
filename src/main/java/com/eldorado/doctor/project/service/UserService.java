@@ -6,7 +6,6 @@ import com.eldorado.doctor.project.model.Roles;
 import com.eldorado.doctor.project.repository.RolesRepository;
 import com.eldorado.doctor.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -30,5 +29,9 @@ public class UserService {
 
     public Roles findById(Long id){
         return roleRepository.findById(id).orElseThrow(() -> new RuntimeException("Cause: User Role not find."));
+    }
+
+    public Customer save(Customer customer){
+        return this.userRepository.save(customer);
     }
 }

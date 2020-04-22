@@ -1,12 +1,14 @@
 package com.eldorado.doctor.project.controller;
 
 
+import com.eldorado.doctor.project.builder.CustomerBuilder;
 import com.eldorado.doctor.project.dto.CustomerDto;
 import com.eldorado.doctor.project.enumerable.RolesEnum;
 import com.eldorado.doctor.project.jwt.JwtProvider;
 import com.eldorado.doctor.project.jwt.message.JwtResponse;
 import com.eldorado.doctor.project.jwt.model.SignUp;
 import com.eldorado.doctor.project.model.Customer;
+import com.eldorado.doctor.project.model.Message;
 import com.eldorado.doctor.project.model.Roles;
 import com.eldorado.doctor.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-public class AuthController extends BaseController{
+public class AuthController extends BaseController {
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -42,33 +44,42 @@ public class AuthController extends BaseController{
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody CustomerDto sigIn) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        sigIn.getUsername(),
-                        sigIn.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            sigIn.getUsername(),
+                            sigIn.getPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
+            String jwt = jwtProvider.generateJwtToken(authentication);
+            return ResponseEntity.ok(new JwtResponse(jwt));
+        } catch (Exception ex) {
+            return ResponseEntity.ok(new Message(ex.getMessage(), 400));
+        }
+
     }
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody SignUp signUp) {
-        if(userService.existsByUsername(signUp.getUsername()) > 0) {
-            return new ResponseEntity<String>("Username exists!",
-                    HttpStatus.BAD_REQUEST);
+    public Message registerUser(@Valid @RequestBody SignUp signUp) {
+
+        Message message = new Message();
+
+        if (userService.existsByUsername(signUp.getUsername()) > 0) {
+            message.setMessage("Email já existe!");
+            message.setCode(400);
+            return message;
         }
 
         Customer user = new Customer(signUp.getName(), signUp.getPhoto(), new Date(), signUp.getUsername(),
-                 encoder.encode(signUp.getPassword()));
+                encoder.encode(signUp.getPassword()));
 
         Set<String> strRoles = signUp.getRoles();
         Set<Roles> roles = new HashSet<>();
 
         strRoles.forEach(role -> {
-            switch(role) {
+            switch (role) {
                 case "admin":
                     Roles adminRole = userService.findById(new Long(RolesEnum.ROLE_ADMIN.getId()));
                     roles.add(adminRole);
@@ -86,8 +97,10 @@ public class AuthController extends BaseController{
         });
 
         user.setRoles(roles);
-        userService.userRepository.save(user);
+        this.userService.save(user);
 
-        return ResponseEntity.ok().body("User registered successfully!");
+        message.setMessage("Cliente criado!");
+        message.setCode(200);
+        return message;
     }
 }

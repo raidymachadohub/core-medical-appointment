@@ -5,7 +5,9 @@ import com.eldorado.doctor.project.dto.CustomerDto;
 import com.eldorado.doctor.project.model.Customer;
 import com.eldorado.doctor.project.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.Date;
@@ -16,6 +18,9 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private UserService userService;
 
     public List<CustomerDto> findAll() {
         return CustomerBuilder.convert(this.customerRepository.findAll());
@@ -41,4 +46,11 @@ public class CustomerService {
         this.customerRepository.deleteById(id);
     }
 
+
+    public CustomerDto findByUsername(@PathVariable("username") String username){
+        Customer customer =  this.userService.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("User Not Found with -> username or email : " + username)
+        );
+        return new CustomerDto(customer);
+    }
 }

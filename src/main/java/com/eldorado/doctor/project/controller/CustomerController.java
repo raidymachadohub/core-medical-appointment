@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class CustomerController  extends BaseController{
+public class CustomerController extends BaseController {
 
     @Autowired
     private CustomerService customerService;
+
 
     @GetMapping(path = "/customer")
     public List<CustomerDto> findAll() {
@@ -46,5 +47,10 @@ public class CustomerController  extends BaseController{
             return new ResponseEntity<String>(ex.toString(),
                     HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(path = "/customer", params = {"username"})
+    public CustomerDto findByUsername(@RequestParam("username") String username) {
+        return this.customerService.findByUsername(username);
     }
 }

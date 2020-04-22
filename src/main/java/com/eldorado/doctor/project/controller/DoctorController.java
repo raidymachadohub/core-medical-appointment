@@ -2,6 +2,7 @@ package com.eldorado.doctor.project.controller;
 
 
 import com.eldorado.doctor.project.dto.DoctorDto;
+import com.eldorado.doctor.project.model.Message;
 import com.eldorado.doctor.project.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,19 +35,22 @@ public class DoctorController extends BaseController {
     }
 
     @PutMapping(path = "/doctor/{id}")
-    public DoctorDto update(@RequestBody DoctorDto doctor, @PathVariable("id") Long id) {
+    public DoctorDto update(@PathVariable("id") Long id, @RequestBody DoctorDto doctor) {
         return this.doctorService.update(doctor, id);
     }
 
     @DeleteMapping(path = "/doctor/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    public Message delete(@PathVariable("id") Long id) {
+        Message message = new Message();
         try {
             this.doctorService.delete(id);
-            return new ResponseEntity<String>("Delete success!",
-                    HttpStatus.OK);
+            message.setCode(200);
+            message.setMessage("Deletado com sucesso");
+            return message;
         } catch (Exception ex) {
-            return new ResponseEntity<String>(ex.toString(),
-                    HttpStatus.BAD_REQUEST);
+            message.setCode(400);
+            message.setMessage(ex.getMessage());
+            return message;
         }
     }
 

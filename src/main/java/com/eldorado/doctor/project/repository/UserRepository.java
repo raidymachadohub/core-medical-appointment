@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<Customer, Long> {
 
-    @Query(value = "SELECT id FROM Customer WHERE username = :p_user")
+    @Query(value = "SELECT count(id) FROM Customer WHERE username = :p_user")
     Integer existsByUsername(@Param("p_user") String username);
 
     Optional<Customer> findByUsername(String username);
