@@ -1,13 +1,13 @@
 package com.eldorado.doctor.project.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Getter
+@Data
 @Table(name = "specialty")
 public class Specialty {
 
@@ -16,11 +16,11 @@ public class Specialty {
     @Column(name = "id_specialty")
     private Long id;
 
-    @Setter
+
     @Column(name = "str_name")
     private String name;
 
-    @Setter
+
     @Column(name = "dt_update")
     private Date dt_update;
 

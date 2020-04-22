@@ -8,8 +8,7 @@ import com.eldorado.doctor.project.jwt.message.JwtResponse;
 import com.eldorado.doctor.project.jwt.model.SignUp;
 import com.eldorado.doctor.project.model.Customer;
 import com.eldorado.doctor.project.model.Roles;
-import com.eldorado.doctor.project.repository.RolesRepository;
-import com.eldorado.doctor.project.repository.UserRepository;
+import com.eldorado.doctor.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class AuthController extends BaseController{
 
@@ -33,10 +31,7 @@ public class AuthController extends BaseController{
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RolesRepository roleRepository;
+    UserService userService;
 
     @Autowired
     PasswordEncoder encoder;
@@ -61,7 +56,7 @@ public class AuthController extends BaseController{
 
     @PostMapping("/auth/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody SignUp signUp) {
-        if(userRepository.existsByUsername(signUp.getUsername()) > 0) {
+        if(userService.existsByUsername(signUp.getUsername()) > 0) {
             return new ResponseEntity<String>("Username exists!",
                     HttpStatus.BAD_REQUEST);
         }
@@ -75,26 +70,23 @@ public class AuthController extends BaseController{
         strRoles.forEach(role -> {
             switch(role) {
                 case "admin":
-                    Roles adminRole = roleRepository.findById(new Long(RolesEnum.ROLE_ADMIN.getId()))
-                            .orElseThrow(() -> new RuntimeException("Cause: User Role not find."));
+                    Roles adminRole = userService.findById(new Long(RolesEnum.ROLE_ADMIN.getId()));
                     roles.add(adminRole);
 
                     break;
                 case "pm":
-                    Roles pmRole = roleRepository.findById(new Long(RolesEnum.ROLE_PM.getId()))
-                            .orElseThrow(() -> new RuntimeException("Cause: User Role not find."));
+                    Roles pmRole = userService.findById(new Long(RolesEnum.ROLE_PM.getId()));
                     roles.add(pmRole);
 
                     break;
                 default:
-                    Roles userRole = roleRepository.findById(new Long(RolesEnum.ROLE_USER.getId()))
-                            .orElseThrow(() -> new RuntimeException("Cause: User Role not find."));
+                    Roles userRole = userService.findById(new Long(RolesEnum.ROLE_USER.getId()));
                     roles.add(userRole);
             }
         });
 
         user.setRoles(roles);
-        userRepository.save(user);
+        userService.userRepository.save(user);
 
         return ResponseEntity.ok().body("User registered successfully!");
     }

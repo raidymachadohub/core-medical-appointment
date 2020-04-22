@@ -41,16 +41,4 @@ public class CustomerService {
         this.customerRepository.deleteById(id);
     }
 
-    public Customer authUserWithPassword(String username, String password) {
-        Customer customer = this.customerRepository.findUserByPassword(username, password);
-        if(customer != null){
-            return customer;
-        }else{
-            return new Customer();
-    }
-
-    }
-
-
-
 }

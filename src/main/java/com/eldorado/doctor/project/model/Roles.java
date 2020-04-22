@@ -1,12 +1,13 @@
 package com.eldorado.doctor.project.model;
 
-import lombok.Getter;
-import lombok.Setter;
+
+
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Data
 @Table(name = "roles")
 public class Roles {
 
@@ -15,7 +16,7 @@ public class Roles {
     @Column(name = "id_roles")
     private Long id;
 
-    @Setter
+
     @Column(name = "str_name")
     private String name;
 

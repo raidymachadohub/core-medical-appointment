@@ -1,13 +1,14 @@
 package com.eldorado.doctor.project.model;
 
-import lombok.Getter;
-import lombok.Setter;
+
+
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Getter
+@Data
 @Table(name = "schedule")
 public class Schedule {
 
@@ -16,25 +17,23 @@ public class Schedule {
     @Column(name = "id_schedule")
     private Long id;
 
-    @Setter
+
     @Column(name = "dt_appointment")
     private Date dt_appointment;
 
-    @Setter
+
     @Column(name = "str_appointment")
     private String str_appointment;
 
     @ManyToOne
-    @Setter
     @JoinColumn(name = "id_customer")
     private Customer customer;
 
     @ManyToOne
-    @Setter
     @JoinColumn(name = "id_doctor")
     private Doctor doctor;
 
-    @Setter
+
     @Column(name = "dt_update")
     private Date dt_update;
 

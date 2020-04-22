@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
+@Data
 @Table(name = "customer")
 public class Customer {
 
@@ -17,28 +17,28 @@ public class Customer {
     @Column(name = "id_customer")
     private Long id;
 
-    @Setter
+
     @Column(name = "str_name")
     private String name;
 
 
-    @Setter
+
     @Column(name = "str_photo")
     private String photo;
 
-    @Setter
+
     @Column(name = "dt_update")
     private Date dt_update;
 
-    @Setter
+
     @Column(name = "username")
     private String username;
 
-    @Setter
+
     @Column(name = "password")
     private String password;
 
-    @Setter
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "customer_roles",
             joinColumns = @JoinColumn(name = "id_customer"),
