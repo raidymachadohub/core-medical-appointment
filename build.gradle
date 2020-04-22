@@ -1,16 +1,11 @@
-buildscript {
-	dependencies {
-		classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.+'
-	}
-}
-
 plugins {
 	id 'org.springframework.boot' version '2.2.6.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+	//id 'java'
 }
-apply plugin: 'war'
-apply plugin: 'com.google.cloud.tools.appengine'
+
+apply plugin: 'java'
+
 
 group = 'com.eldorado.doctor'
 version = '0.0.1-SNAPSHOT'
@@ -19,16 +14,6 @@ sourceCompatibility = '1.8'
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
-	}
-}
-
-dependencies {
-	compile group: 'com.google.cloud.sql', name: 'postgres-socket-factory', version: '1.0.15'
-}
-appengine {
-	deploy {
-		stopPreviousVersion = true
-		promote = true
 	}
 }
 
@@ -49,8 +34,11 @@ dependencies {
 	}
 }
 
-
-
 test {
 	useJUnitPlatform()
+}
+
+bootJar {
+	baseName = 'project'
+	version =  '1.0.0'
 }

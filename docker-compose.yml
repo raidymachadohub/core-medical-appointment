@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  spring:
+      build:
+        context: .
+        dockerfile: docker/spring.dockerfile
+      ports:
+        - 8080:8080
+      restart: always
+
+
+

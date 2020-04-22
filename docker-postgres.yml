@@ -1,0 +1,11 @@
+version: '2'
+
+postgres:
+    image: postgres:9.4
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=eldorado
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
